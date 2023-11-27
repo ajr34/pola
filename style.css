@@ -1,6 +1,11 @@
 :root {
   --border-radius: 0.5rem;
   --default-padding: 2rem;
+  --color-light: #efebe9;
+  --color-accent: #fd9602;
+  --color-accent-light: rgb(255, 194, 109);
+  --color-dark: #282c38;
+  --color-primary: #c4ccb4;
 }
 
 html {
@@ -13,6 +18,7 @@ body {
   display: flex;
   min-width: 320px;
   min-height: 100vh;
+  background: var(--color-light);
 }
 
 h1,
@@ -36,7 +42,7 @@ p {
 
 /* Navigation */
 .nav {
-  background: #595959;
+  background: var(--color-primary);
   width: 80%;
   border-radius: var(--border-radius);
   justify-content: space-between;
@@ -57,26 +63,104 @@ ul {
   justify-content: center;
 }
 
-.img__placeholder {
+.container__card {
+  position: relative;
   max-height: clamp(40rem, 70vh, 60rem);
   width: clamp(30rem, 75%, 45rem);
   aspect-ratio: 3/4;
   place-self: center;
-  border: 0.3rem dashed #727272;
-  background: rgb(224, 224, 224);
+  /* Remove below - should be for drop area */
+  background: #fff;
   border-radius: calc(var(--border-radius) * 2);
 }
 
-.img__drop-area {
-  height: 100%;
+.card {
+  padding: 2rem;
+  height: calc(100% - 4rem);
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 }
 
-.img__drop-area--text {
+.card__img-frame {
+  aspect-ratio: 1/1;
+  width: 100%;
+}
+
+#drop-area.flex {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 4rem;
+}
+
+.img--false {
+  background: var(--color-light);
+  outline: 5px dashed #c1c1c1;
+}
+
+.img--true {
+  border: none;
+}
+
+.drop-area__text {
   font-size: 1.4rem;
   text-align: center;
+}
+
+/* Add to content div when there is active img */
+.has__content {
+  justify-content: flex-start;
+}
+
+.content--img__uploaded {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+}
+
+.content--controls {
+  padding-top: 2rem;
+  align-self: end;
+  gap: 1rem;
+}
+
+.content--date {
+  margin-top: auto;
+}
+
+.icon {
+  border: 2px solid var(--color-primary);
+  background-color: #ffffff;
+  height: 16px;
+  width: 16px;
+  padding: 0.4rem;
+  border-radius: 50px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-align: center;
+}
+
+.drop-area__icon {
+  height: 30%;
+  width: auto;
+}
+
+@media screen and (max-width: 700px) {
+  .content {
+    padding: 1.4rem;
+    height: calc(100% - 2.8rem);
+  }
+
+  .content--controls {
+    padding-top: 1.4rem;
+  }
+  .icon {
+    height: 12px;
+    width: 12px;
+  }
 }
 
 /* Links */
@@ -103,4 +187,10 @@ ul {
   cursor: pointer;
   transition: border-color 0.25s;
   border: 2px solid transparent;
+}
+
+.drop-area {
+  position: absolute;
+  width: inherit;
+  height: 100%;
 }
