@@ -21,7 +21,7 @@ const loadCard = () => {
   const dropAreaText = createEl('h2', 'drop-area__text');
   dropAreaText.innerText = 'Drag images here or click button below';
 
-  const fileInputLabel = createEl('label', 'btn');
+  const fileInputLabel = createEl('label', 'btn', 'btn--card');
   fileInputLabel.setAttribute('for', 'input-file');
 
   const fileInputLabelText = createEl('p');

@@ -1,7 +1,11 @@
 import './style.css';
+import './filters.css';
+import clearChildren from './modules/utilities/clearChildren';
+
 import loadNav from './modules/nav';
 import loadMainContainer from './modules/main-container';
 import loadCard from './modules/card';
+import loadFXCarousel from './modules/fx-carousel';
 
 loadNav();
 loadMainContainer();
@@ -21,14 +25,10 @@ const uploadImage = () => {
   let newImg = document.createElement('img');
 
   newImg.src = imgSRC;
-  newImg.classList.add('content--img__uploaded');
+  newImg.classList.add('card__img');
   dropArea.appendChild(newImg);
-};
 
-const clearChildren = (node) => {
-  while (node.hasChildNodes()) {
-    node.removeChild(node.lastChild);
-  }
+  loadFXCarousel(imgSRC);
 };
 
 inputFile.addEventListener('change', () => {
@@ -40,6 +40,7 @@ inputFile.addEventListener('change', () => {
 dropArea.addEventListener('dragover', (e) => {
   e.preventDefault();
 });
+
 dropArea.addEventListener('drop', (e) => {
   e.preventDefault();
   inputFile.files = e.dataTransfer.files;
