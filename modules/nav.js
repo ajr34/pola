@@ -3,7 +3,7 @@ import createEl from './utilities/createElement';
 const loadNav = () => {
   const appContainer = document.getElementById('app');
 
-  const nav = createEl('nav', 'nav', 'flex');
+  const nav = createEl('nav', 'nav','nav--main', 'flex');
   const logo = createEl('h1', 'logo');
   logo.innerText = 'POLA';
 
