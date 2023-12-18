@@ -2,19 +2,25 @@ import createEl from './utilities/createElement';
 import clearChildren from './utilities/clearChildren';
 import loadFXThumbnails from './fx-thumbnails';
 
-const loadFXCarousel = (imgSRC) => {
-  const appContainer = document.getElementById('app');
-
-  const existingCarousel = document.querySelector('.container__carousel');
-
-  if (document.body.contains(existingCarousel)) {
-    clearChildren(existingCarousel);
-    loadFXThumbnails(existingCarousel, imgSRC);
-  } else {
-    const newCarousel = createEl('div', 'nav', 'container__carousel', 'flex');
-    loadFXThumbnails(newCarousel, imgSRC);
+const carousel = {
+  load: () => {
+    const appContainer = document.getElementById('app');
+    const newCarousel = createEl(
+      'div',
+      'nav',
+      'carousel',
+      'scroll-snap',
+      'grid',
+      'hidden'
+    );
     appContainer.appendChild(newCarousel);
-  }
+  },
+  refresh: (imgSRC) => {
+    const carousel = document.querySelector('.carousel');
+    carousel.classList.remove('hidden');
+    clearChildren(carousel);
+    loadFXThumbnails(carousel, imgSRC);
+  },
 };
 
-export default loadFXCarousel;
+export default carousel;

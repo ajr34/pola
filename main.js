@@ -5,11 +5,12 @@ import clearChildren from './modules/utilities/clearChildren';
 import loadNav from './modules/nav';
 import loadMainContainer from './modules/main-container';
 import loadCard from './modules/card';
-import loadFXCarousel from './modules/fx-carousel';
+import carousel from './modules/fx-carousel';
 
 loadNav();
 loadMainContainer();
 loadCard();
+carousel.load();
 
 const dropArea = document.getElementById('drop-area');
 const inputFile = document.getElementById('input-file');
@@ -28,7 +29,7 @@ const uploadImage = () => {
   newImg.classList.add('card__img');
   dropArea.appendChild(newImg);
 
-  loadFXCarousel(imgSRC);
+  carousel.refresh(imgSRC);
 };
 
 inputFile.addEventListener('change', () => {

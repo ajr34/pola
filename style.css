@@ -11,6 +11,7 @@
 html {
   font-size: 62.5%;
   font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
 }
 
 body {
@@ -32,24 +33,31 @@ p {
   width: 80%;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  margin: 4rem auto;
+  /* justify-content: space-between; */
+  margin: 0 auto;
+  height: 100svh;
 }
 
 .flex {
   display: flex;
 }
 
+.grid {
+  display: grid;
+}
+
 /* Navigation */
 .nav {
-  background: var(--color-primary);
+  height: 2rem;
   width: 80%;
+  align-items: center;
+  background: var(--color-primary);
   border-radius: var(--border-radius);
   padding: var(--default-padding);
-  align-items: center;
 }
 
 .nav--main {
+  margin-top: 2rem;
   justify-content: space-between;
 }
 
@@ -61,26 +69,23 @@ ul {
 
 /* Main area */
 .container__main {
+  position: relative;
   height: 100%;
-  width: calc(var(--default-padding) * 2 + 80%);
-  justify-content: center;
-  padding: 2rem 0;
+  width: 100%;
+  place-items: center;
+  margin: 4rem 0;
 }
 
 .container__card {
-  position: relative;
-  max-height: clamp(40rem, 70vh, 60rem);
-  width: clamp(30rem, 75%, 45rem);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100%;
+  width: auto;
   aspect-ratio: 3/4;
-  place-self: center;
-  /* Remove below - should be for drop area */
   background: #fff;
   border-radius: calc(var(--border-radius) * 2);
-}
-
-.container__carousel {
-  justify-content: space-between;
-  gap: 4rem;
 }
 
 .card {
@@ -91,14 +96,51 @@ ul {
   align-items: center;
 }
 
+@media screen and (max-width: 810px) {
+  #app {
+    width: 90%;
+  }
+
+  .nav {
+    width: calc(100% - (var(--default-padding) * 2));
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .container__card {
+    width: 100%;
+    height: auto;
+  }
+}
+
 .card__img-frame,
+.card__img--cover,
+.card__img--contain,
 .card__img {
+  position: relative;
   aspect-ratio: 1/1;
   width: 100%;
 }
 
 .card__img {
   object-fit: cover;
+}
+
+.card__img--cover {
+  object-fit: cover;
+}
+
+.card__img--contain {
+  object-fit: contain;
+}
+
+.card__filter-name {
+  font-size: 1.2rem;
+}
+
+.card__controls {
+  gap: 2rem;
+  padding: 1rem;
 }
 
 #drop-area.flex {
@@ -124,12 +166,6 @@ ul {
 }
 
 /* Add to content div when there is active img */
-
-.content--img__thumbnail {
-  width: 100%;
-  aspect-ratio: 1/1;
-  object-fit: cover;
-}
 
 .content--controls {
   padding-top: 2rem;
@@ -176,19 +212,53 @@ ul {
   }
 }
 
-.img-frame--fx {
-  height: 70px;
-  width: auto;
-  aspect-ratio: 1/1;
+/* FX Carousel */
+
+.hidden {
+  visibility: hidden;
+}
+.carousel {
+  height: 6rem;
+  margin-bottom: 2rem;
+  align-content: center;
+  grid-auto-flow: column;
+  overflow-y: hidden;
+  gap: 4rem;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
 }
 
-/* FX Carousel */
-.carousel {
-  width: 100%;
-  overflow-y: hidden;
-  overflow-x: scroll;
-  justify-content: space-evenly;
-  align-items: center;
+.scroll-snap {
+  scroll-snap-type: inline mandatory;
+  scroll-padding-inline: 2rem;
+}
+
+.scroll-snap > * {
+  scroll-snap-align: start;
+}
+
+.scroll-snap:last-child {
+  scroll-snap-align: end;
+}
+
+.carousel__img-frame {
+  padding: 0.2rem;
+  background: var(--color-primary);
+  border-radius: var(--border-radius);
+}
+
+.carousel__img {
+  height: 50px;
+  width: auto;
+  object-fit: cover;
+  aspect-ratio: 1/1;
+  box-shadow: 0px 2px 3px 1px var(--color-dark);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+}
+
+.active {
+  background: var(--color-accent);
 }
 
 /* Links */
@@ -217,6 +287,18 @@ ul {
   font-weight: 400;
   padding: 0.5rem 6rem;
   background-color: #727272;
+}
+
+.btn--card__controls {
+  background: var(--color-accent);
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50px;
+  border: none;
+}
+
+.icon--card {
+  width: 2.2rem;
 }
 
 .drop-area {

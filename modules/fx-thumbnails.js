@@ -1,55 +1,96 @@
 import createEl from './utilities/createElement';
 
-const loadFXThumbnails = (carousel, imgSRC) => {
-  let mainIMG = document.querySelector('.card__img');
-  let fxArray = ['1977', 'aden', 'amaro', 'ashby'];
-
-  const addFilter = (filterName) => {
-    mainIMG.classList.add(`filter-${filterName}`);
-  };
-  const removeFilter = (filterName) => {
-    mainIMG.classList.remove(`filter-${filterName}`);
-  };
-
+const createCarouselThumbnail = (parentEl, fxArray, imgSRC) => {
   fxArray.forEach((filterName) => {
-    const imgContainer = createEl('div', 'img-frame--fx');
-    const img = createEl(
-      'img',
-      'content--img__thumbnail',
-      `filter-${filterName}`
-    );
+    const imgContainer = createEl('div', 'carousel__img-frame', 'flex');
+    const img = createEl('img', 'carousel__img', `filter-${filterName}`);
     img.setAttribute('src', imgSRC);
     imgContainer.appendChild(img);
-    carousel.appendChild(imgContainer);
+    parentEl.appendChild(imgContainer);
+  });
+};
 
-    let hoverController = new AbortController();
+const loadFXThumbnails = (carousel, imgSRC) => {
+  const mainIMG = document.querySelector('.card__img');
+  let fxArray = [
+    '1977',
+    'aden',
+    'amaro',
+    'ashby',
+    'brannan',
+    'brooklyn',
+    'charmes',
+    'clarendon',
+    'crema',
+    'dogpatch',
+    'earlybird',
+    'ginza',
+    'inkwell',
+    'mayfair',
+    'poprocket',
+  ];
+  let fxTracker = [];
 
-    imgContainer.addEventListener('mouseenter', () => addFilter(filterName));
+  createCarouselThumbnail(carousel, fxArray, imgSRC);
+  const imgFX = document.querySelectorAll('.carousel__img');
 
-    imgContainer.addEventListener(
-      'mouseleave',
-      () => removeFilter(filterName),
-      { signal: hoverController.signal }
-    );
+  // Add pointer events
+  imgFX.forEach((element) => {
+    let controller = new AbortController();
+    element.setAttribute('data-clicked', 'false');
 
-    let isClicked = false;
-
-    const toggleFilter = () => {
-      isClicked = !isClicked;
-      if (isClicked) {
-        hoverController.abort();
-      } else {
-        hoverController = new AbortController();
-        imgContainer.addEventListener(
-          'mouseleave',
-          () => removeFilter(filterName),
-          { signal: hoverController.signal }
-        );
-      }
+    const addHoverEffect = (target) => {
+      target.addEventListener(
+        'pointerenter',
+        () => {
+          mainIMG.classList.add(`${target.classList[1]}`);
+        },
+        { signal: controller.signal }
+      );
+      target.addEventListener(
+        'pointerleave',
+        () => {
+          mainIMG.classList.remove(`${target.classList[1]}`);
+        },
+        { signal: controller.signal }
+      );
     };
 
-    imgContainer.addEventListener('click', () => {
-      toggleFilter();
+    addHoverEffect(element);
+
+    element.addEventListener('pointerdown', () => {
+      element.dataset.clicked = !(element.dataset.clicked === 'true');
+      element.parentElement.classList.toggle('active');
+
+      if (element.dataset.clicked === 'true') {
+        // Add filter
+        mainIMG.classList.add(`${element.classList[1]}`);
+        // add element to tracker
+        fxTracker.push(element);
+        // Stop hover effect
+        controller.abort();
+      } else if (element.dataset.clicked === 'false') {
+        // Add hover effect
+        controller = new AbortController();
+        addHoverEffect(element);
+        // Remove filter
+        mainIMG.classList.remove(`${element.classList[1]}`);
+        // reset tracker
+        fxTracker.splice(0, 1);
+      }
+
+      if (mainIMG.classList.length > 2) {
+        mainIMG.classList.remove(`${fxTracker[0].classList[1]}`);
+        fxTracker[0].parentElement.classList.remove('active');
+        fxTracker[0].dataset.clicked = !(
+          fxTracker[0].dataset.clicked === 'true'
+        );
+
+        /*  HOVER NOT WORKING */
+        //  controller = new AbortController();
+        //  addHoverEffect(fxTracker[0])
+        fxTracker.splice(0, 1);
+      }
     });
   });
 };
