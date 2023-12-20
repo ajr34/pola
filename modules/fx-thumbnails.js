@@ -30,65 +30,69 @@ const loadFXThumbnails = (carousel, imgSRC) => {
     'poprocket',
   ];
   let fxTracker = [];
+  let controllers = [];
+
+  const addFX = (effect) => {
+    return () => mainIMG.classList.add(`${effect}`);
+  };
+  const removeFX = (effect) => {
+    return () => mainIMG.classList.remove(`${effect}`);
+  };
 
   createCarouselThumbnail(carousel, fxArray, imgSRC);
   const imgFX = document.querySelectorAll('.carousel__img');
 
   // Add pointer events
-  imgFX.forEach((element) => {
-    let controller = new AbortController();
+  imgFX.forEach((element, i) => {
+    let filter = element.classList[1];
     element.setAttribute('data-clicked', 'false');
 
-    const addHoverEffect = (target) => {
-      target.addEventListener(
-        'pointerenter',
-        () => {
-          mainIMG.classList.add(`${target.classList[1]}`);
-        },
-        { signal: controller.signal }
-      );
-      target.addEventListener(
-        'pointerleave',
-        () => {
-          mainIMG.classList.remove(`${target.classList[1]}`);
-        },
-        { signal: controller.signal }
-      );
-    };
+    controllers.push(new AbortController());
 
-    addHoverEffect(element);
+    element.addEventListener('pointerenter', addFX(filter), {
+      signal: controllers[i].signal,
+    });
+    element.addEventListener('pointerleave', removeFX(filter), {
+      signal: controllers[i].signal,
+    });
 
-    element.addEventListener('pointerdown', () => {
+    element.addEventListener('pointerdown', (e) => {
+      controllers[i].signal.addEventListener('abort', () => {
+        controllers[i] = new AbortController();
+      });
+
       element.dataset.clicked = !(element.dataset.clicked === 'true');
-      element.parentElement.classList.toggle('active');
 
       if (element.dataset.clicked === 'true') {
-        // Add filter
-        mainIMG.classList.add(`${element.classList[1]}`);
-        // add element to tracker
-        fxTracker.push(element);
-        // Stop hover effect
-        controller.abort();
+        controllers[i].abort();
+        element.parentElement.classList.add('active');
+        mainIMG.classList.add(`${filter}`);
+        fxTracker.push(e.target);
       } else if (element.dataset.clicked === 'false') {
-        // Add hover effect
-        controller = new AbortController();
-        addHoverEffect(element);
-        // Remove filter
-        mainIMG.classList.remove(`${element.classList[1]}`);
-        // reset tracker
+        element.addEventListener('pointerenter', addFX(filter), {
+          signal: controllers[i].signal,
+        });
+        element.addEventListener('pointerleave', removeFX(filter), {
+          signal: controllers[i].signal,
+        });
+        element.parentElement.classList.remove('active');
+        mainIMG.classList.remove(`${filter}`);
         fxTracker.splice(0, 1);
       }
 
-      if (mainIMG.classList.length > 2) {
-        mainIMG.classList.remove(`${fxTracker[0].classList[1]}`);
-        fxTracker[0].parentElement.classList.remove('active');
-        fxTracker[0].dataset.clicked = !(
-          fxTracker[0].dataset.clicked === 'true'
-        );
+      if (fxTracker.length > 1) {
+        const prevElIndex = Array.prototype.indexOf.call(imgFX, fxTracker[0]);
+        const prevEl = fxTracker[0];
 
-        /*  HOVER NOT WORKING */
-        //  controller = new AbortController();
-        //  addHoverEffect(fxTracker[0])
+        prevEl.addEventListener('pointerenter', addFX(prevEl.classList[1]), {
+          signal: controllers[prevElIndex].signal,
+        });
+        prevEl.addEventListener('pointerleave', removeFX(prevEl.classList[1]), {
+          signal: controllers[prevElIndex].signal,
+        });
+        mainIMG.classList.remove(prevEl.classList[1]);
+        prevEl.dataset.clicked = 'false';
+        prevEl.parentElement.classList.remove('active');
         fxTracker.splice(0, 1);
       }
     });
