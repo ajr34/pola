@@ -143,6 +143,10 @@ ul {
   padding: 1rem;
 }
 
+.canvas__img {
+  width: 100%;
+}
+
 #drop-area.flex {
   flex-direction: column;
   align-items: center;

@@ -16,18 +16,18 @@ const loadFXThumbnails = (carousel, imgSRC) => {
     '1977',
     'aden',
     'amaro',
-    'ashby',
-    'brannan',
-    'brooklyn',
-    'charmes',
-    'clarendon',
-    'crema',
-    'dogpatch',
-    'earlybird',
-    'ginza',
-    'inkwell',
-    'mayfair',
-    'poprocket',
+    // 'ashby',
+    // 'brannan',
+    // 'brooklyn',
+    // 'charmes',
+    // 'clarendon',
+    // 'crema',
+    // 'dogpatch',
+    // 'earlybird',
+    // 'ginza',
+    // 'inkwell',
+    // 'mayfair',
+    // 'poprocket',
   ];
   let fxTracker = [];
   let controllers = [];
@@ -61,22 +61,21 @@ const loadFXThumbnails = (carousel, imgSRC) => {
         controllers[i] = new AbortController();
       });
 
-      element.dataset.clicked = !(element.dataset.clicked === 'true');
+      e.target.dataset.clicked = !(e.target.dataset.clicked === 'true');
 
-      if (element.dataset.clicked === 'true') {
+      if (e.target.dataset.clicked === 'true') {
         controllers[i].abort();
-        element.parentElement.classList.add('active');
+        e.target.parentElement.classList.add('active');
         mainIMG.classList.add(`${filter}`);
         fxTracker.push(e.target);
-      } else if (element.dataset.clicked === 'false') {
-        element.addEventListener('pointerenter', addFX(filter), {
+      } else if (e.target.dataset.clicked === 'false') {
+        e.target.addEventListener('pointerenter', addFX(filter), {
           signal: controllers[i].signal,
         });
-        element.addEventListener('pointerleave', removeFX(filter), {
+        e.target.addEventListener('pointerleave', removeFX(filter), {
           signal: controllers[i].signal,
         });
-        element.parentElement.classList.remove('active');
-        mainIMG.classList.remove(`${filter}`);
+        e.target.parentElement.classList.remove('active');
         fxTracker.splice(0, 1);
       }
 

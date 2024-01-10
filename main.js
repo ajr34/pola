@@ -7,6 +7,8 @@ import loadMainContainer from './modules/main-container';
 import loadCard from './modules/card';
 import carousel from './modules/fx-carousel';
 
+import createEl from './modules/utilities/createElement';
+
 loadNav();
 loadMainContainer();
 loadCard();
@@ -15,28 +17,70 @@ carousel.load();
 const dropArea = document.getElementById('drop-area');
 const inputFile = document.getElementById('input-file');
 const imgFrame = document.getElementById('img-frame');
-const imgMainBtn = document.querySelector('.btn');
 
-const uploadImage = () => {
+// Canvas
+const canvas = createEl('canvas', 'canvas__img');
+const ctx = canvas.getContext('2d');
+
+canvas.height = canvas.width;
+
+let img = new Image();
+
+inputFile.addEventListener('change', (e) => {
+  let userImg = e.target.files[0];
+  console.log(e.target.files[0]);
+  loadFile(userImg, canvas);
+  renderDropArea();
+});
+
+const loadFile = (file, canvas) => {
+  if (file.type.match('image.*')) {
+    let reader = readFile(file);
+    reader.addEventListener('load', (e) => {
+      if (e.target.readyState == FileReader.DONE) {
+        img.src = e.target.result;
+        img.addEventListener('load', () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawImgCover(img, canvas);
+        });
+      }
+    });
+  } else {
+    alert('Not an image');
+    throw new Error('Error: File is not an image');
+  }
+};
+
+const readFile = (file) => {
+  let fr = new FileReader();
+  fr.readAsDataURL(file);
+  return fr;
+};
+
+const drawImgCover = (img, canvas) => {
+  const context = canvas.getContext('2d');
+  const ratio = img.width / img.height;
+  let newWidth = canvas.width;
+  let newHeight = newWidth / ratio;
+
+  if (newHeight < canvas.height) {
+    newHeight = canvas.height;
+    newWidth = newHeight * ratio;
+  }
+
+  const xOffset = newWidth > canvas.width ? (canvas.width - newWidth) / 2 : 0;
+  const yOffset =
+    newHeight > canvas.height ? (canvas.height - newHeight) / 2 : 0;
+  context.drawImage(img, xOffset, yOffset, newWidth, newHeight);
+};
+
+const renderDropArea = () => {
   imgFrame.classList.remove('img--false');
   imgFrame.classList.add('img--true');
   clearChildren(dropArea);
 
-  let imgSRC = URL.createObjectURL(inputFile.files[0]);
-  let newImg = document.createElement('img');
-
-  newImg.src = imgSRC;
-  newImg.classList.add('card__img');
-  dropArea.appendChild(newImg);
-
-  carousel.refresh(imgSRC);
+  dropArea.appendChild(canvas);
 };
-
-inputFile.addEventListener('change', () => {
-  fileTypeCheck(inputFile.files);
-  uploadImage();
-  updateCardBtn();
-});
 
 dropArea.addEventListener('dragover', (e) => {
   e.preventDefault();
@@ -46,35 +90,13 @@ dropArea.addEventListener('drop', (e) => {
   e.preventDefault();
   inputFile.files = e.dataTransfer.files;
 
-  let uploadedFile = e.dataTransfer.items;
-
-  multiFileCheck(uploadedFile);
-  fileTypeCheck(uploadedFile);
-
-  uploadImage();
-  updateCardBtn();
-});
-
-const fileTypeCheck = (dataTransferObj) => {
-  const typeList = ['png', 'jpeg', 'webp'];
-
-  let matchingFileType = typeList.filter((type) => {
-    return dataTransferObj[0].type == `image/${type}`;
-  });
-
-  if (dataTransferObj[0].type !== `image/${matchingFileType}`) {
-    alert('Not an image');
-    throw new Error('Error: File is not an image');
-  }
-};
-
-const multiFileCheck = (dataTransferObj) => {
-  if (dataTransferObj.length > 1) {
+  if (inputFile.files.length > 1) {
     alert(`Error: Multiple files uploaded... Can't do that yet!`);
     throw new Error(`Error: Multiple files uploaded... Can't do that yet!`);
+  } else {
+    let userImg = inputFile.files[0];
+    loadFile(userImg, canvas);
+    renderDropArea();
   }
-};
+});
 
-const updateCardBtn = () => {
-  imgMainBtn.innerText = 'save';
-};
