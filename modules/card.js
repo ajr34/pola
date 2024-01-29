@@ -27,6 +27,9 @@ const loadCard = () => {
   const fileInputLabelText = createEl('p');
   fileInputLabelText.innerText = 'Browse Files';
 
+  const saveBtn = createEl('button', 'btn', 'btn--save');
+  saveBtn.innerText = 'Save Image';
+
   const fileInput = createEl('input');
   Object.assign(fileInput, {
     type: 'file',
@@ -42,6 +45,7 @@ const loadCard = () => {
   imgFrame.appendChild(dropArea);
   dropArea.appendChild(dropAreaIcon);
   dropArea.appendChild(dropAreaText);
+  card.appendChild(saveBtn);
 
   card.appendChild(fileInputLabel);
   fileInputLabel.appendChild(fileInputLabelText);
