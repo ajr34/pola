@@ -1,14 +1,17 @@
 import './style.css';
 import './filters.css';
-import clearChildren from './modules/utilities/clearChildren';
+import clearChildren from './modules/utilities/clearChildren.js';
 
-import loadNav from './modules/nav';
-import loadMainContainer from './modules/main-container';
-import loadCard from './modules/card';
-import carousel from './modules/fx-carousel';
+import loadNav from './modules/nav.js';
+import loadMainContainer from './modules/main-container.js';
+import loadCard from './modules/card.js';
+import carousel from './modules/fx-carousel.js';
 
-import createEl from './modules/utilities/createElement';
-import drawImgCover from './modules/utilities/drawImgCover';
+import createEl from './modules/utilities/createElement.js';
+import drawImgCover from './modules/utilities/drawImgCover.js';
+
+//API TESTING
+import { requestBtnsRender } from './modules/backend/client-api.js';
 
 loadNav();
 loadMainContainer();
@@ -34,6 +37,9 @@ inputFile.addEventListener('change', (e) => {
   renderImg();
   carousel.render(imgBlob);
   carousel.eventsTo(img);
+
+  //API TESTING
+  requestBtnsRender(canvas);
 });
 
 dropArea.addEventListener('dragover', (e) => {
@@ -54,18 +60,10 @@ dropArea.addEventListener('drop', (e) => {
     renderImg();
     carousel.render(imgBlob);
     carousel.eventsTo(img);
+
+    //API TESTING
+    requestBtnsRender(canvas);
   }
-});
-
-//Download button
-const saveBtn = document.querySelector('.btn--save');
-
-saveBtn.addEventListener('pointerdown', () => {
-  let canvasURL = canvas.toDataURL();
-  let imgLink = createEl('a');
-  imgLink.href = canvasURL;
-  imgLink.download = 'test-img';
-  imgLink.click();
 });
 
 const imgToBlob = (target) => URL.createObjectURL(target);
