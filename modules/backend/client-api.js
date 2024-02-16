@@ -1,4 +1,4 @@
-import createEl from '../utilities/createElement';
+import createEl from '../utilities/createElement.js';
 
 //TEST USER VAR
 let user = 'ajrea';

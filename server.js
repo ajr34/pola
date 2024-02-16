@@ -1,22 +1,13 @@
 import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
 import { uploadToBucket, listUserImages } from './modules/backend/s3-api.js';
 
-const port = 3000;
 const app = express();
+const port = 3000;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.join(__dirname + '/')));
+app.use('/', express.static('dist'));
 
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.sendFile('index.html', { root: __dirname });
-});
+app.use(express.json({ limit: '200kb' }));
 
 app.post('/api', async (req, res) => {
   let img = req.body.url;
@@ -38,8 +29,7 @@ app.post('/api', async (req, res) => {
 
 app.get('/tagged', async (req, res) => {
   let userImages = await listUserImages();
-  console.log(userImages);
-  res.send(test);
+  res.send(userImages);
 });
 
 app.listen(port, () => console.log(`listening on http://localhost:${port}`));

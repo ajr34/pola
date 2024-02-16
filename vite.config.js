@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/pola/',
+  base: './',
   optimizeDeps: {
     esbuildOptions: {
       // Node.js global to browser globalThis
